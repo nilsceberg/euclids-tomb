@@ -77,9 +77,9 @@ function entity.list()
         end
     end
 
-    function list:draw(camera)
+    function list:draw(camera, ox, oy)
         for k, v in ipairs(self.entities) do
-            v:draw(camera)
+            v:draw(camera, ox, oy)
         end
     end
 
