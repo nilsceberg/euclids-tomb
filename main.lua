@@ -46,12 +46,17 @@ function love.update(dt)
     h = h + 1
     t = t + dt
 
+    -- Maybe we actually want to control the instance of the cube
+    -- and not sort of the object itself...? Doesn't really make
+    -- a difference, I suppose.
     movement.move(cube, 2.0, dt)
     cam.x, cam.y = cube.x, cube.y
 end
 
 local entities = entity.list()
-entities:add(cube)
+--entities:add(cube:instantiate(0, 0, 0, 0))
+
+testRoom.entities:add(cube)
 
 local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0), 0)
 entities:addMany(room1.entities)

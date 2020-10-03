@@ -16,4 +16,16 @@ function coords.screenToWorld(x, y, zw, rotation)
     return xw, yw, zw or 0
 end
 
+function coords.rotate(x, y, rot)
+    if rot == 0 then
+        return x, y
+    elseif rot == 1 then
+        return -y, x
+    elseif rot == 2 then
+        return -x, -y
+    else
+        return y, -x
+    end
+end
+
 return coords

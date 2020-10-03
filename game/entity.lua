@@ -23,33 +23,55 @@ function entity.new(asset, x, y, z, d, layer)
         end
     })
 
-    function object:draw(camera)
-        local cx, cy = camera:getOffset()
-        local sx, sy = coords.worldToScreen(self.x, self.y, self.z)
-        love.graphics.draw(self.asset.image, cx + sx - self.asset.originX, cy + sy - self.asset.originY)
+    function object:instantiate(rotation, ox, oy, oz)
+        local instance = {
+            entity = object,
+        }
+
+        function instance:getX()
+            local rx, ry = coords.rotate(object.x, object.y, rotation)
+            return rx + ox
+        end
+
+        function instance:getY()
+            local rx, ry = coords.rotate(object.x, object.y, rotation)
+            return ry + oy
+        end
+
+        function instance:getZ()
+            return object.z + oz
+        end
+
+        function instance:draw(camera)
+            local cx, cy = camera:getOffset()
+            local sx, sy = coords.worldToScreen(self:getX(), self:getY(), self:getZ())
+            love.graphics.draw(object.asset.image, cx + sx - object.asset.originX, cy + sy - object.asset.originY)
+        end
+
+        return instance
     end
 
     return object
 end
 
 function compareDepth(a, b)
-    local sxa, sya = coords.worldToScreen(a.x, a.y, a.z)
-    local sxb, syb = coords.worldToScreen(b.x, b.y, b.z)
+    local sxa, sya = coords.worldToScreen(a:getX(), a:getY(), a:getZ())
+    local sxb, syb = coords.worldToScreen(b:getX(), b:getY(), b:getZ())
 
     -- Priority: layer, screen y, world z, explicit depth, screen x
-    if a.layer ~= b.layer then
-        return a.layer < b.layer
+    if a.entity.layer ~= b.entity.layer then
+        return a.entity.layer < b.entity.layer
     elseif sya ~= syb then
         return sya < syb
-    elseif a.z ~= b.z then
-        return a.z < b.z
-    elseif a.d ~= b.d then
-        return a.d < b.d
+    elseif a:getZ() ~= b:getZ() then
+        return a:getZ() < b:getZ()
+    elseif a.entity.d ~= b.entity.d then
+        return a.entity.d < b.entity.d
     elseif sxa ~= sxb then
         return sxa < sxb
     end
 
-    return a.uuid < b.uuid
+    return a.entity.uuid < b.entity.uuid
 end
 
 function entity.list()
@@ -77,9 +99,9 @@ function entity.list()
         end
     end
 
-    function list:draw(camera, ox, oy)
+    function list:draw(camera)
         for k, v in ipairs(self.entities) do
-            v:draw(camera, ox, oy)
+            v:draw(camera)
         end
     end
 

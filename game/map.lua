@@ -16,18 +16,6 @@ function map.anchor(x, y, gx, gy)
     }
 end
 
-function rotateCoords(x, y, rot)
-    if rot == 0 then
-        return x, y
-    elseif rot == 1 then
-        return -y, x
-    elseif rot == 2 then
-        return -x, -y
-    else
-        return y, -x
-    end
-end
-
 function map.new(tiles)
     local room = {
         tiles = tiles,
@@ -35,6 +23,33 @@ function map.new(tiles)
         height = #tiles,
         entities = entity.list(),
     }
+
+    for y=0,room.height-1 do
+        for x=0,room.width-1 do
+            local tileType = room.tiles[y + 1][x + 1]
+
+            local asset = nil
+            if tileType == 1 then
+                asset = assets.tile
+            elseif tileType == 2 then
+                asset = assets.wall
+            end
+
+            local layer = 0
+            if tileType == 2 then
+                layer = 1
+            end
+
+            --local rx, ry = rotateCoords(x, y, rotation)
+
+            if asset ~= nil then
+                -- TODO: use the same entities
+                --local e = entity.new(asset, rx + ox, ry + oy, 0, depth, layer)
+                local e = entity.new(asset, x, y, 0, depth, layer)
+                room.entities:add(e)
+            end
+        end
+    end
 
     function room:instantiate(anchor, rotation)
         local instance = {
@@ -44,33 +59,13 @@ function map.new(tiles)
             entities = entity.list(),
         }
 
-        local rax, ray = rotateCoords(instance.anchor.x, instance.anchor.y, rotation)
+        local rax, ray = coords.rotate(instance.anchor.x, instance.anchor.y, rotation)
         local ox, oy = instance.anchor.gx - rax, instance.anchor.gy - ray
 
-        for y=0,room.height-1 do
-            for x=0,room.width-1 do
-                local tileType = room.tiles[y + 1][x + 1]
-
-                local asset = nil
-                if tileType == 1 then
-                    asset = assets.tile
-                elseif tileType == 2 then
-                    asset = assets.wall
-                end
-
-                local layer = 0
-                if tileType == 2 then
-                    layer = 1
-                end
-
-                local rx, ry = rotateCoords(x, y, rotation)
-
-                if asset ~= nil then
-                    -- TODO: use the same entities
-                    local e = entity.new(asset, rx + ox, ry + oy, 0, depth, layer)
-                    instance.entities:add(e)
-                end
-            end
+        for k, v in pairs(room.entities.entities) do
+            instance.entities:add(
+                v:instantiate(rotation, ox, oy, 0)
+            )
         end
 
         return instance
