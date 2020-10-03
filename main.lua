@@ -34,11 +34,15 @@ testRoom = map.createRoom({
     { 0, 0, 0, 0, 0, 0, 0 },
     { 0, 2, 2, 2, 2, 2, 0 },
     { 0, 2, 1, 1, 1, 1, 0 },
+    { 0, 1, 1, 1, 1, 1, 0 },
     { 0, 2, 1, 1, 1, 1, 0 },
-    { 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 2, 1, 1, 1, 1, 0 },
+    { 0, 2, 1, 1, 1, 1, 0 },
+    { 0, 0, 0, 0, 1, 0, 0 },
 })
  
 -- Draw a coloured rectangle.
 function love.draw()
+    love.graphics.scale(2, 2)
     map.drawRoom(testRoom)
 end

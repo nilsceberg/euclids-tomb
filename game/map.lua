@@ -14,7 +14,7 @@ function map.createRoom(tiles)
 end
 
 function map.drawRoom(room)
-    ox = 512 
+    ox = 256 
     oy = 64
 
     for y=0,room.height-1 do
