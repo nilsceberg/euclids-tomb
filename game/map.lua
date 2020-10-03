@@ -34,8 +34,8 @@ function map.new(tiles)
 
     room.entities:sort()
 
-    function room:draw(ox, oy)
-        self.entities:draw(ox, oy)
+    function room:draw(camera)
+        self.entities:draw(camera)
     end
 
     return room

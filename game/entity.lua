@@ -22,9 +22,10 @@ function entity.new(asset, x, y, z, d)
         end
     })
 
-    function object:draw(ox, oy)
+    function object:draw(camera)
+        local cx, cy = camera:getOffset()
         local sx, sy = coords.worldToScreen(self.x, self.y, self.z)
-        love.graphics.draw(self.asset.image, ox + sx - self.asset.originX, oy + sy - self.asset.originY)
+        love.graphics.draw(self.asset.image, cx + sx - self.asset.originX, cy + sy - self.asset.originY)
     end
 
     return object
@@ -73,9 +74,9 @@ function entity.list()
         end
     end
 
-    function list:draw(ox, oy)
+    function list:draw(camera)
         for k, v in ipairs(self.entities) do
-            v:draw(ox, oy)
+            v:draw(camera)
         end
     end
 

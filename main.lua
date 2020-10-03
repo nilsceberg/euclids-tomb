@@ -1,6 +1,8 @@
 local assets = require "game.assets"
 local map = require "game.map"
 local entity = require "game.entity"
+local graphics = require "game.graphics"
+local camera = require "game.camera"
 
 local coroutine = require "coroutine"
 
@@ -26,6 +28,7 @@ local testRoom = map.new({
 })
 
 local cube = entity.new(assets.cube, 11, 4, 0, 1)
+local cam = camera.new()
 
 local font = love.graphics.getFont()
 local settings = love.graphics.newText(font, "Settings")
@@ -65,11 +68,28 @@ function love.update(dt)
             cube.y = cube.y - 1
             t = MOVEMENT_COOLDOWN
         end
+
+        cam.x = cube.x
+        cam.y = cube.y
+
+        --if love.keyboard.isDown("up") then
+        --    cam.x = cam.x - 1
+        --    t = MOVEMENT_COOLDOWN
+        --end
+        --if love.keyboard.isDown("down") then
+        --    cam.x = cam.x + 1
+        --    t = MOVEMENT_COOLDOWN
+        --end
+        --if love.keyboard.isDown("left") then
+        --    cam.y = cam.y + 1
+        --    t = MOVEMENT_COOLDOWN
+        --end
+        --if love.keyboard.isDown("right") then
+        --    cam.y = cam.y - 1
+        --    t = MOVEMENT_COOLDOWN
+        --end
     end
 end
-
-OX = 256 
-OY = 64
 
 local entities = entity.list()
 entities:add(cube)
@@ -77,10 +97,10 @@ entities:addMany(testRoom.entities)
 
 -- Draw a coloured rectangle.
 function love.draw()
-    love.graphics.scale(2, 2)
+    love.graphics.scale(graphics.SCALE, graphics.SCALE)
 
     entities:sort()
-    entities:draw(OX, OY)
+    entities:draw(cam)
 
     love.graphics.setColor(0.3, 0.3, 0.3)
     love.graphics.rectangle("fill", 10, 10, 64, 32)
