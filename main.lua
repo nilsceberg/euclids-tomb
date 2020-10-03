@@ -3,6 +3,7 @@ local map = require "game.map"
 local entity = require "game.entity"
 local graphics = require "game.graphics"
 local camera = require "game.camera"
+local movement = require "game.movement"
 
 local coroutine = require "coroutine"
 
@@ -17,17 +18,17 @@ function love.load()
 end
  
 local testRoom = map.new({
-    { 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 2, 2, 2, 2, 2, 0 },
+    { 0, 2, 2, 2, 0, 0, 0 },
+    { 0, 2, 1, 2, 2, 2, 2 },
     { 0, 2, 1, 1, 1, 1, 0 },
     { 0, 1, 1, 1, 1, 1, 0 },
     { 0, 2, 1, 1, 1, 1, 0 },
     { 0, 2, 1, 1, 2, 1, 0 },
     { 0, 2, 1, 1, 1, 1, 0 },
-    { 0, 0, 0, 0, 1, 0, 0 },
+    { 0, 2, 0, 0, 1, 0, 0 },
 })
 
-local cube = entity.new(assets.cube, 11, 4, 0, 1)
+local cube = entity.new(assets.cube, 3, 3, 0, 1, 1)
 local cam = camera.new()
 
 local font = love.graphics.getFont()
@@ -39,56 +40,13 @@ function love.keypressed(key)
     end
 end
 
-local MOVEMENT_COOLDOWN = 0.2
-
 -- Increase the size of the rectangle every frame.
 function love.update(dt)
     w = w + 1
     h = h + 1
-    t = t - dt
+    t = t + dt
 
-    if t < 0 then
-        t = 0
-    end
-
-    if t == 0.0 then
-        if love.keyboard.isDown("w") then
-            cube.x = cube.x - 1
-            t = MOVEMENT_COOLDOWN
-        end
-        if love.keyboard.isDown("s") then
-            cube.x = cube.x + 1
-            t = MOVEMENT_COOLDOWN
-        end
-        if love.keyboard.isDown("a") then
-            cube.y = cube.y + 1
-            t = MOVEMENT_COOLDOWN
-        end
-        if love.keyboard.isDown("d") then
-            cube.y = cube.y - 1
-            t = MOVEMENT_COOLDOWN
-        end
-
-        cam.x = cube.x
-        cam.y = cube.y
-
-        --if love.keyboard.isDown("up") then
-        --    cam.x = cam.x - 1
-        --    t = MOVEMENT_COOLDOWN
-        --end
-        --if love.keyboard.isDown("down") then
-        --    cam.x = cam.x + 1
-        --    t = MOVEMENT_COOLDOWN
-        --end
-        --if love.keyboard.isDown("left") then
-        --    cam.y = cam.y + 1
-        --    t = MOVEMENT_COOLDOWN
-        --end
-        --if love.keyboard.isDown("right") then
-        --    cam.y = cam.y - 1
-        --    t = MOVEMENT_COOLDOWN
-        --end
-    end
+    movement.move(cube, 2.0, dt)
 end
 
 local entities = entity.list()

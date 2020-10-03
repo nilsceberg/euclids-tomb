@@ -26,8 +26,13 @@ function map.new(tiles)
                 asset = assets.wall
             end
 
+            local layer = 0
+            if tileType == 2 then
+                layer = 1
+            end
+
             if asset ~= nil then
-                room.entities:add(entity.new(asset, x, y, 0))
+                room.entities:add(entity.new(asset, x, y, 0, depth, layer))
             end
         end
     end

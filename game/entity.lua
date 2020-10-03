@@ -6,13 +6,14 @@ local coords = require "game.coords"
 
 local entity = {}
 
-function entity.new(asset, x, y, z, d)
+function entity.new(asset, x, y, z, d, layer)
     local object = {
         asset = asset,
         x = x,
         y = y,
         z = z or 0,
         d = d or 0,
+        layer = layer or 0,
         uuid = uuid.new()
     }
 
@@ -35,8 +36,10 @@ function compareDepth(a, b)
     local sxa, sya = coords.worldToScreen(a.x, a.y, a.z)
     local sxb, syb = coords.worldToScreen(b.x, b.y, b.z)
 
-    -- Priority: screen y, world z, explicit depth, screen x
-    if sya ~= syb then
+    -- Priority: layer, screen y, world z, explicit depth, screen x
+    if a.layer ~= b.layer then
+        return a.layer < b.layer
+    elseif sya ~= syb then
         return sya < syb
     elseif a.z ~= b.z then
         return a.z < b.z
