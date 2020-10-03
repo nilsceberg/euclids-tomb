@@ -1,7 +1,6 @@
-ASSETS = require "game.assets"
-
-TILE_WIDTH = 64
-TILE_HEIGHT = 32
+local assets = require "game.assets"
+local coords = require "game.coords"
+local graphics = require "game.graphics"
 
 map = {}
 
@@ -29,10 +28,11 @@ function map.drawRoom(room)
             end
 
             if asset ~= nil then
+                local sx, sy = coords.worldToScreen(x, y)
                 love.graphics.draw(
-                    asset,
-                    ox + x * TILE_WIDTH / 2 - y * TILE_WIDTH / 2,
-                    oy + y * TILE_HEIGHT / 2 + x * TILE_HEIGHT / 2
+                    asset.image,
+                    ox + sx - asset.originX,
+                    oy + sy - asset.originY
                 )
             end
         end
