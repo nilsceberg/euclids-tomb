@@ -1,3 +1,6 @@
 out
 *.code-workspace
 *.love
+builddep
+dist
+ld47.zip
