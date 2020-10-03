@@ -1,20 +1,19 @@
 local assets = require "game.assets"
 local coords = require "game.coords"
 local graphics = require "game.graphics"
+local entity = require "game.entity"
+
+local coroutine = require "coroutine"
 
 map = {}
 
-function map.createRoom(tiles)
-    return {
+function map.new(tiles)
+    local room = {
         tiles = tiles,
         width = #tiles[1],
         height = #tiles,
+        entities = entity.list()
     }
-end
-
-function map.drawRoom(room)
-    ox = 256 
-    oy = 64
 
     for y=0,room.height-1 do
         for x=0,room.width-1 do
@@ -28,15 +27,18 @@ function map.drawRoom(room)
             end
 
             if asset ~= nil then
-                local sx, sy = coords.worldToScreen(x, y)
-                love.graphics.draw(
-                    asset.image,
-                    ox + sx - asset.originX,
-                    oy + sy - asset.originY
-                )
+                room.entities:add(entity.new(asset, x, y, 0))
             end
         end
     end
+
+    room.entities:sort()
+
+    function room:draw(ox, oy)
+        self.entities:draw(ox, oy)
+    end
+
+    return room
 end
 
 return map
