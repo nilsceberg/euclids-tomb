@@ -3,5 +3,5 @@ out
 *.love
 builddep
 dist
-ld47.zip
+*.zip
 lua_modules

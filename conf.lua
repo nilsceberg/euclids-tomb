@@ -3,7 +3,7 @@ package.path = 'lua_modules/share/lua/5.4/?.lua;lua_modules/share/lua/' .. versi
 package.cpath = 'lua_modules/lib/lua/5.4/?.so;' .. package.cpath
 
 function love.conf(t)
-    t.window.title = "Euclid's Grave"
+    t.window.title = "Euclid's Tomb"
     t.window.width = 1280
     t.window.height = 780
 end

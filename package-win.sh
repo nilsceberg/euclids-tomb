@@ -1,4 +1,4 @@
-DIST_DIR=LD47
+DIST_DIR=EuclidsTomb
 LOVE_DIST=builddep/love-11.3-win64 
 
 ./package.sh
@@ -6,7 +6,8 @@ LOVE_DIST=builddep/love-11.3-win64
 rm -rf $DIST_DIR
 cp -r $LOVE_DIST $DIST_DIR
 
-cat ld47.love >> $DIST_DIR/love.exe
+mv $DIST_DIR/{love.exe,EuclidsTomb.exe}
+cat EuclidsTomb.love >> $DIST_DIR/EuclidsTomb.exe
 
-zip -r ld47.zip $DIST_DIR
+zip -r EuclidsTomb.zip $DIST_DIR
 rm -rf $DIST_DIR
