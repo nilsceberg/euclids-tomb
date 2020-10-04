@@ -15,3 +15,6 @@ for f in assets/*.aseprite; do
     out=$OUT_DIR/assets/$(basename $f .aseprite).png
     $ASEPRITE_BIN $f -b --save-as $out
 done
+
+echo "Building sound..."
+cp assets/*.mp3 $OUT_DIR/assets/

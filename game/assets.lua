@@ -18,4 +18,6 @@ return {
     tile = loadImage("tile"),
     wall = loadImage("wall"),
     cube = loadImage("cube"),
+
+    backgroundMusic = love.audio.newSource(ASSET_PATH .. "ost.mp3", "static"),
 }

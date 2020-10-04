@@ -4,6 +4,7 @@ local entity = require "game.entity"
 local graphics = require "game.graphics"
 local camera = require "game.camera"
 local movement = require "game.movement"
+local audio = require "game.audio"
 
 local coroutine = require "coroutine"
 
@@ -14,8 +15,9 @@ local N = 0
 
 -- Load some default values for our rectangle.
 function love.load()
-    x, y, w, h = 20, 20, 60, 20
 end
+
+local audioController = audio.controller()
  
 local testRoom = map.new({
     { 0, 2, 2, 2, 0, 0, 0 },
@@ -42,8 +44,6 @@ end
 
 -- Increase the size of the rectangle every frame.
 function love.update(dt)
-    w = w + 1
-    h = h + 1
     t = t + dt
 
     -- Maybe we actually want to control the instance of the cube
