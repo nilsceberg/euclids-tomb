@@ -84,14 +84,16 @@ function addMapEntity(x, y, tileType, room)
     end
 end
 
-function map.new(tiles, connections)
+function map.new(tiles, name, onEnter)
     local room = {
         tiles = tiles,
         width = #tiles[1],
         height = #tiles,
         entities = entity.list(),
         instances = {},
-        connections = connections or {},
+        name = name,
+        connections = {},
+        onEnter = onEnter or function () end,
     }
 
     function room:instantiate(anchor, rotation)
@@ -148,7 +150,7 @@ function map.new(tiles, connections)
             table.insert(self.connectedInstances, instance)
         end
         
-        function instance:enter(from)
+        function instance:enter(from, player)
             if from ~= nil then
                 from.active = false
                 from.connectedInstances = {}
@@ -164,6 +166,8 @@ function map.new(tiles, connections)
             end
 
             self.active = true
+
+            self.room.onEnter(player, self, from)
 
             for k, conn in ipairs(room.connections) do
                 instance:connect(conn)

@@ -42,7 +42,7 @@ function player.new(initialRoomInstance)
 
                 newRoom.room:addEntity(cube)
 
-                newRoom:enter(player.currentRoomInstance)
+                newRoom:enter(player.currentRoomInstance, player)
                 player.currentRoomInstance = newRoom
 
                 entities.rebuild = true

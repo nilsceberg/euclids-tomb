@@ -16,7 +16,26 @@ rooms.intro = map.new({
     { 2, 1, {1, 3}, 1, 1, 1, {1, 3}, 1, 2 },
     { 2, 1, 1, 1, 1, 1, 1, 1, 2 },
     { 2, 2, 2, 1, 1, 1, 2, 2, 2 },
-})
+}, "intro", function(player, to, from)
+    if from == nil then return end
+    if player.introLaps == nil then
+        player.introLaps = 0
+    end
+
+    if (to.rotation - from.rotation) % 4 == 1 then
+        player.introLaps = player.introLaps + 1
+    elseif (to.rotation - from.rotation) % 4 == 3 then
+        player.introLaps = math.max(0, player.introLaps - 1)
+    end
+
+    if player.introLaps == 8 then
+        rooms.intro:connect(map.connection(
+            5, 13, 0, 4, rooms.hall, 1
+        ))
+    end
+
+    print("Laps: ", player.introLaps)
+end)
 
 rooms.hall = map.new({
     { 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2 },
