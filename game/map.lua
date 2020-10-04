@@ -89,6 +89,9 @@ function map.new(tiles, connections)
         local rax, ray = coords.rotate(anchor.x, anchor.y, rotation)
         local gx, gy = coords.instanceToWorld(anchor.instance, anchor.gx, anchor.gy)
         local ox, oy = gx - rax, gy - ray
+        
+        -- avoid memory leak
+        anchor.instance = nil
 
         print(gx, gy)
         print(ox, oy)
@@ -132,13 +135,13 @@ function map.new(tiles, connections)
                 from.connectedInstances = {}
 
                 local keepSelf = false
-                for i, instance in ipairs(from.room.instances) do
-                    if instance.id == self.id then
-                        keepSelf = true
-                    end
+                for i, instance in ipairs(from.connectedInstances) do
+                    instance.room.instances = {}
                 end
 
-                from.room.instances = keepSelf and { self } or {}
+                from.room.instances = {}
+
+                self.room.instances = { self }
             end
 
             self.active = true

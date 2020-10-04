@@ -96,6 +96,7 @@ function love.draw()
         love.graphics.draw(editTileImage, 10, 10)
     end
 
+    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10)
 --    love.graphics.setColor(0.3, 0.3, 0.3)
 --    love.graphics.rectangle("fill", 10, 10, 64, 32)
 --    love.graphics.setColor(1.0, 1.0, 1.0)
