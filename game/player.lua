@@ -19,9 +19,6 @@ function player.new(initialRoomInstance)
         -- Just pick one
         local playerInstance = player.currentRoomInstance.entities:getInstanceByEntityId(cube.id)
 
-        -- Maybe we actually want to control the instance of the cube
-        -- and not sort of the object itself...? Doesn't really make
-        -- a difference, I suppose.
         movement.move(playerInstance, 2.0, dt)
         cam.x, cam.y = playerInstance:getX(), playerInstance:getY()
 
@@ -44,7 +41,6 @@ function player.new(initialRoomInstance)
                 newRoom.room:addEntity(cube)
                 entities.rebuild = true
 
-                --player.currentTileX, player.currentTileY = coords.tile(cube.x, cube.y)
                 player.currentRoomInstance = newRoom
             end
         end
