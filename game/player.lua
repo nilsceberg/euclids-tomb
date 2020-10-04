@@ -15,6 +15,8 @@ function player.new(initialRoomInstance)
     local cube = entity.new(assets.cube, player.currentTileX, player.currentTileY, 0, 1, 1)
     initialRoomInstance.room:addEntity(cube)
 
+    initialRoomInstance:enter(nil)
+
     function player:update(dt, cam, entities)
         -- Just pick one
         local playerInstance = player.currentRoomInstance.entities:getInstanceByEntityId(cube.id)
@@ -39,9 +41,11 @@ function player.new(initialRoomInstance)
                 cube.x, cube.y = coords.mapRoom(player.currentRoomInstance, newRoom, cube.x, cube.y)
 
                 newRoom.room:addEntity(cube)
-                entities.rebuild = true
 
+                newRoom:enter(player.currentRoomInstance)
                 player.currentRoomInstance = newRoom
+
+                entities.rebuild = true
             end
         end
     end

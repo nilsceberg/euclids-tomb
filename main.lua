@@ -37,24 +37,16 @@ entities.rebuild = true
 
 print("Instantiating room 1")
 local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0, nil), 0)
-print("Instantiating room 2")
-local room2 = testRoom:instantiate(map.anchor(1, 3, 4, 8, room1), 1)
-print("Instantiating room 3")
-local room3 = testRoom:instantiate(map.anchor(1, 3, 4, 8, room2), 2)
-print("Instantiating room 4")
-local room4 = testRoom:instantiate(map.anchor(1, 3, 4, 8, room3), 3)
-
---print("Instantiating room 1")
---local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0), 0)
---print("Instantiating room 2")
---local room2 = testRoom:instantiate(map.anchor(1, 3, 4, 8), 1)
---print("Instantiating room 3")
---local room3 = testRoom:instantiate(map.anchor(1, 3, -1, 11), 2)
---print("Instantiating room 4")
---local room4 = testRoom:instantiate(map.anchor(1, 3, -4, 6), 3)
 
 print("Creating player")
 local player = player.new(room1)
+
+testRoom:connect(map.connection(
+    4, 8, 1, 3, testRoom, 1
+))
+testRoom:connect(map.connection(
+    1, 3, 4, 8, testRoom, -1
+))
 
 local globalContext = {
     player = player

@@ -17,13 +17,25 @@ function map.anchor(x, y, gx, gy, instance)
     }
 end
 
-function map.new(tiles)
+function map.connection(outX, outY, inX, inY, intoRoom, relativeRotation)
+    return {
+        outX = outX,
+        outY = outY,
+        inX = inX,
+        inY = inY,
+        intoRoom = intoRoom,
+        relativeRotation = relativeRotation,
+    }
+end
+
+function map.new(tiles, connections)
     local room = {
         tiles = tiles,
         width = #tiles[1],
         height = #tiles,
         entities = entity.list(),
         instances = {},
+        connections = connections or {},
     }
 
     for y=0,room.height-1 do
@@ -66,6 +78,8 @@ function map.new(tiles)
             anchor = anchor or map.anchor(0, 0, 0, 0),
             rotation = rotation or 0,
             entities = entity.list(),
+            connectedInstances = {},
+            active = false,
         }
 
         local rax, ray = coords.rotate(anchor.x, anchor.y, rotation)
@@ -88,6 +102,48 @@ function map.new(tiles)
             self.entities:removeInstanceByEntityId(entity.id)
         end
 
+        function instance:connect(c)
+            if not self.active then
+                return
+            end
+
+            -- if another room is connected here, remove it
+            for i, connected in ipairs(self.connectedInstances) do
+                if connected.anchor.gx == c.outX and connected.anchor.gy == c.outY then
+                    table.remove(self.connectedInstances, i)
+                    break
+                end
+            end
+
+            local instance = c.intoRoom:instantiate(
+                map.anchor(c.inX, c.inY, c.outX, c.outY, self),
+                (c.relativeRotation + rotation) % 4 -- technically unnecessary but let's do it
+            )
+            table.insert(self.connectedInstances, instance)
+        end
+        
+        function instance:enter(from)
+            if from ~= nil then
+                from.active = false
+                from.connectedInstances = {}
+
+                local keepSelf = false
+                for i, instance in ipairs(from.room.instances) do
+                    if instance.id == self.id then
+                        keepSelf = true
+                    end
+                end
+
+                from.room.instances = keepSelf and { self } or {}
+            end
+
+            self.active = true
+
+            for k, conn in ipairs(room.connections) do
+                instance:connect(conn)
+            end
+        end
+
         --print("Copying entities from parent room")
         for k, v in ipairs(room.entities.entities) do
             --print("Adding " .. k)
@@ -98,6 +154,20 @@ function map.new(tiles)
         table.insert(room.instances, instance)
 
         return instance
+    end
+
+    function room:connect(connection)
+        -- if another room is connected here, remove it
+        for i, c in ipairs(self.connections) do
+            if connection.outX == c.outX and connection.outY == c.outY then
+                table.remove(self.connections, i)
+                break
+            end
+        end
+        table.insert(self.connections, connection)
+        for i, instance in ipairs(self.instances) do
+            instance:connect(connection)
+        end
     end
 
     function room:addEntity(entity)
