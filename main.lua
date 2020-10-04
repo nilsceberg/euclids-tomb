@@ -68,10 +68,10 @@ function love.draw()
     entities:sort()
     entities:draw(cam)
 
-    love.graphics.setColor(0.3, 0.3, 0.3)
-    love.graphics.rectangle("fill", 10, 10, 64, 32)
-    love.graphics.setColor(1.0, 1.0, 1.0)
-    love.graphics.draw(settings, 20, 20)
+--    love.graphics.setColor(0.3, 0.3, 0.3)
+--    love.graphics.rectangle("fill", 10, 10, 64, 32)
+--    love.graphics.setColor(1.0, 1.0, 1.0)
+--    love.graphics.draw(settings, 20, 20)
 end
 
 function love.mousepressed(x, y, button)
