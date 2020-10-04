@@ -2,9 +2,10 @@ local graphics = require "game.graphics"
 
 ASSET_PATH="out/assets/"
 
-function loadImage(name)
+function loadImage(name, layer)
     local asset = {
         image = love.graphics.newImage(ASSET_PATH .. name .. ".png"),
+        layer = layer,
     }
 
     asset.originX = asset.image:getWidth() / 2
@@ -15,9 +16,10 @@ function loadImage(name)
 end
 
 return {
-    tile = loadImage("tile"),
-    wall = loadImage("wall"),
-    cube = loadImage("cube"),
+    tile = loadImage("tile", 0),
+    wall = loadImage("wall", 1),
+    pillar = loadImage("pillar", 1),
+    cube = loadImage("cube", 1),
 
     backgroundMusic = love.audio.newSource(ASSET_PATH .. "ost.mp3", "static"),
 }

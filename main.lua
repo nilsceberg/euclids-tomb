@@ -8,8 +8,6 @@ local audio = require "game.audio"
 
 local coroutine = require "coroutine"
 
-print(ASSETS)
-
 local t = 0
 local N = 0
 
@@ -25,7 +23,7 @@ local testRoom = map.new({
     { 0, 0, 1, 1, 1, 1, 0 },
     { 0, 1, 1, 1, 1, 1, 0 },
     { 0, 2, 1, 1, 1, 1, 0 },
-    { 0, 2, 1, 1, 2, 1, 0 },
+    { 0, 2, 1, 1, {1, 3}, 1, 0 },
     { 0, 2, 1, 1, 1, 1, 0 },
     { 0, 2, 0, 0, 1, 0, 0 },
 })

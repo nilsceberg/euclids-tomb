@@ -26,27 +26,29 @@ function map.new(tiles)
 
     for y=0,room.height-1 do
         for x=0,room.width-1 do
-            local tileType = room.tiles[y + 1][x + 1]
-
-            local asset = nil
-            if tileType == 1 then
-                asset = assets.tile
-            elseif tileType == 2 then
-                asset = assets.wall
+            local tileTypes = room.tiles[y + 1][x + 1]
+            if type(tileTypes) ~= "table" then
+                tileTypes = {tileTypes}
             end
 
-            local layer = 0
-            if tileType == 2 then
-                layer = 1
-            end
+            for depth, tileType in ipairs(tileTypes) do
+                local asset = nil
+                if tileType == 1 then
+                    asset = assets.tile
+                elseif tileType == 2 then
+                    asset = assets.wall
+                elseif tileType == 3 then
+                    asset = assets.pillar
+                end
 
-            --local rx, ry = rotateCoords(x, y, rotation)
+                --local rx, ry = rotateCoords(x, y, rotation)
 
-            if asset ~= nil then
-                -- TODO: use the same entities
-                --local e = entity.new(asset, rx + ox, ry + oy, 0, depth, layer)
-                local e = entity.new(asset, x, y, 0, depth, layer)
-                room.entities:add(e)
+                if asset ~= nil then
+                    -- TODO: use the same entities
+                    --local e = entity.new(asset, rx + ox, ry + oy, 0, depth, layer)
+                    local e = entity.new(asset, x, y, 0, depth, asset.layer)
+                    room.entities:add(e)
+                end
             end
         end
     end
