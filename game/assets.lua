@@ -56,10 +56,11 @@ return {
     trigger = loadImage("trigger", 0),
 
     wall = loadImage("wall", 1),
-    wallNorth = loadImage("wall", nil, nil, "wall", 1),
-    wallEast = loadImage(nil, nil, "wall", "wall", 1),
-    wallSouth = loadImage(nil, "wall", "wall", nil, 1),
-    wallWest = loadImage("wall", "wall", nil, nil, 1),
+    backWall = loadImage("back-wall", 1),
+    wallNorth = loadImage("wall", "back-wall", "back-wall", "wall", 1),
+    wallEast = loadImage("back-wall", "back-wall", "wall", "wall", 1),
+    wallSouth = loadImage("back-wall", "wall", "wall", "back-wall", 1),
+    wallWest = loadImage("wall", "wall", "back-wall", "back-wall", 1),
 
     pillar = loadImage("pillar", 1),
     cube = loadImage("cube", 1),

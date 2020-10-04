@@ -55,26 +55,31 @@ function map.connection(outX, outY, inX, inY, intoRoom, relativeRotation)
     }
 end
 
+function isWall(tileType)
+    return tileType == 2 or tileType == 5
+end
+
 function addMapEntity(x, y, tileType, room)
     local asset = nil
     if tileType == 1 then
         asset = assets.tile
     elseif tileType == 2 then
         asset = assets.wall
+        if y == 0 and isWall(room.tiles[y+1][x+1 - 1]) and isWall(room.tiles[y+1][x+1 + 1]) then
+            asset = assets.wallNorth
+        elseif x == room.width-1  and isWall(room.tiles[y+1 - 1][x+1]) and isWall(room.tiles[y+1 + 1][x+1])then
+            asset = assets.wallEast
+        elseif y == room.height-1 and isWall(room.tiles[y+1][x+1 - 1]) and isWall(room.tiles[y+1][x+1 + 1]) then
+            asset = assets.wallSouth
+        elseif x == 0 and isWall(room.tiles[y+1 - 1][x+1]) and isWall(room.tiles[y+1 + 1][x+1]) then
+            asset = assets.wallWest
+        end
     elseif tileType == 3 then
         asset = assets.pillar
     elseif tileType == 4 then
         asset = assets.trigger
     elseif tileType == 5 then
-        asset = assets.compass
-    elseif tileType == 10 then
-        asset = assets.wallNorth
-    elseif tileType == 11 then
-        asset = assets.wallEast
-    elseif tileType == 12 then
-        asset = assets.wallSouth
-    elseif tileType == 13 then
-        asset = assets.wallWest
+        asset = assets.backWall
     end
 
     if asset ~= nil then
