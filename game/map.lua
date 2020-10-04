@@ -148,6 +148,17 @@ function map.new(tiles, connections)
             end
         end
 
+        function room:setTile(x, y, tileType)
+            local rx, ry = coords.worldToInstance(self, x, y)
+            if rx < 0 or ry < 0 then
+                return
+            end
+
+            if rx > 0 then
+                -- eh idk if this is worth it
+            end
+        end
+
         --print("Copying entities from parent room")
         for k, v in ipairs(room.entities.entities) do
             --print("Adding " .. k)

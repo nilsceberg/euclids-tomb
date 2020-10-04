@@ -6,6 +6,7 @@ local camera = require "game.camera"
 local movement = require "game.movement"
 local audio = require "game.audio"
 local player = require "game.player"
+local coords = require "game.coords"
 
 local t = 0
 local N = 0
@@ -48,6 +49,8 @@ testRoom:connect(map.connection(
     1, 3, 4, 8, testRoom, -1
 ))
 
+local editTile = 1
+
 local globalContext = {
     player = player,
     entities = entities,
@@ -56,6 +59,8 @@ local globalContext = {
 function love.keypressed(key)
     if key == "escape" then
         love.event.quit()
+    elseif tonumber(key) ~= nil then
+        editTile = tonumber(key)
     else
         player:keyPress(key, entities)
     end
@@ -79,6 +84,18 @@ function love.draw()
     entities:sort()
     entities:draw(cam, globalContext)
 
+    local editTileImage = nil
+    if editTile == 1 then
+        editTileImage = assets.tile.images[1]
+    elseif editTile == 2 then
+        editTileImage = assets.wall.images[1]
+    elseif editTile == 3 then
+        editTileImage = assets.pillar.images[1]
+    end
+    if editTileImage then
+        love.graphics.draw(editTileImage, 10, 10)
+    end
+
 --    love.graphics.setColor(0.3, 0.3, 0.3)
 --    love.graphics.rectangle("fill", 10, 10, 64, 32)
 --    love.graphics.setColor(1.0, 1.0, 1.0)
@@ -88,8 +105,18 @@ end
 function love.mousepressed(x, y, button)
     x = x / 2
     y = y / 2
+
     print(x, y)
-    if x > 10 and x < 74 and y > 10 and y < 42 then
-        (require "os").execute("gnome-terminal -- vim conf.lua")
-    end
+
+    cx, cy = cam:getOffset()
+    wx, wy = coords.screenToWorld(x - cx, y - cy)
+    tx, ty = coords.tile(wx, wy)
+
+    print(tx, ty)
+
+    --player.currentRoomInstance:setTile(tx, ty, editTile)
+
+    --if x > 10 and x < 74 and y > 10 and y < 42 then
+    --    (require "os").execute("gnome-terminal -- vim conf.lua")
+    --end
 end
