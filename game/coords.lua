@@ -28,4 +28,8 @@ function coords.rotate(x, y, rot)
     end
 end
 
+function coords.tile(x, y)
+    return math.floor(x + 0.5), math.floor(y + 0.5)
+end
+
 return coords

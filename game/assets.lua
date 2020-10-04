@@ -17,6 +17,7 @@ end
 
 return {
     tile = loadImage("tile", 0),
+    trigger = loadImage("trigger", 0),
     wall = loadImage("wall", 1),
     pillar = loadImage("pillar", 1),
     cube = loadImage("cube", 1),

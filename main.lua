@@ -5,8 +5,7 @@ local graphics = require "game.graphics"
 local camera = require "game.camera"
 local movement = require "game.movement"
 local audio = require "game.audio"
-
-local coroutine = require "coroutine"
+local player = require "game.player"
 
 local t = 0
 local N = 0
@@ -21,18 +20,34 @@ local testRoom = map.new({
     { 0, 2, 2, 2, 0, 0, 0 },
     { 0, 2, 1, 2, 2, 2, 2 },
     { 0, 0, 1, 1, 1, 1, 0 },
-    { 0, 1, 1, 1, 1, 1, 0 },
+    { 0, {1, 4}, 1, 1, 1, 1, 0 },
     { 0, 2, 1, 1, 1, 1, 0 },
     { 0, 2, 1, 1, {1, 3}, 1, 0 },
     { 0, 2, 1, 1, 1, 1, 0 },
-    { 0, 2, 0, 0, 1, 0, 0 },
+    { 0, 2, 0, 0, {1, 4}, 0, 0 },
 })
 
-local cube = entity.new(assets.cube, 3, 3, 0, 1, 1)
 local cam = camera.new()
 
 local font = love.graphics.getFont()
 local settings = love.graphics.newText(font, "Settings")
+
+local entities = entity.list()
+
+print("Instantiating room 1")
+local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0), 0)
+print("Instantiating room 2")
+local room2 = testRoom:instantiate(map.anchor(1, 3, 4, 8), 1)
+print("Instantiating room 3")
+local room3 = testRoom:instantiate(map.anchor(1, 3, -1, 11), 2)
+print("Instantiating room 4")
+local room4 = testRoom:instantiate(map.anchor(1, 3, -4, 6), 3)
+
+print("Creating player")
+local player = player.new(room1)
+
+print("Registering all entities")
+testRoom:addAllEntityInstancesTo(entities)
 
 function love.keypressed(key)
     if key == "escape" then
@@ -40,36 +55,11 @@ function love.keypressed(key)
     end
 end
 
--- Increase the size of the rectangle every frame.
 function love.update(dt)
     t = t + dt
-
-    -- Maybe we actually want to control the instance of the cube
-    -- and not sort of the object itself...? Doesn't really make
-    -- a difference, I suppose.
-    movement.move(cube, 2.0, dt)
-    cam.x, cam.y = cube.x, cube.y
+    player:update(dt, cam, entities)
 end
 
-local entities = entity.list()
---entities:add(cube:instantiate(0, 0, 0, 0))
-
-testRoom.entities:add(cube)
-
-local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0), 0)
-entities:addMany(room1.entities)
-
-local room2 = testRoom:instantiate(map.anchor(1, 3, 4, 8), 1)
-entities:addMany(room2.entities)
-
-local room3 = testRoom:instantiate(map.anchor(1, 3, -1, 11), 2)
-entities:addMany(room3.entities)
-
-local room4 = testRoom:instantiate(map.anchor(1, 3, -4, 6), 3)
-entities:addMany(room4.entities)
-
-
--- Draw a coloured rectangle.
 function love.draw()
     love.graphics.scale(graphics.SCALE, graphics.SCALE)
 

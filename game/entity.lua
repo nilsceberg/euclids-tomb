@@ -14,19 +14,29 @@ function entity.new(asset, x, y, z, d, layer)
         z = z or 0,
         d = d or 0,
         layer = layer or 0,
-        uuid = uuid.new()
+        id = uuid.new(),
+        instances = {},
+        color = {1,1,1}
     }
 
     setmetatable(object, {
         __tostring = function(self)
-            return (self.x .. ", " .. self.y)
+            return "Entity"
         end
     })
 
-    function object:instantiate(rotation, ox, oy, oz)
+    function object:instantiate(rotation, ox, oy, oz, roomInstance)
         local instance = {
+            id = uuid.new(),
             entity = object,
+            roomInstance = roomInstance,
         }
+
+        setmetatable(instance, {
+            __tostring = function(self)
+                return "EntityInstance"
+            end
+        })
 
         function instance:getX()
             local rx, ry = coords.rotate(object.x, object.y, rotation)
@@ -43,10 +53,14 @@ function entity.new(asset, x, y, z, d, layer)
         end
 
         function instance:draw(camera)
+            love.graphics.setColor(unpack(self.entity.color))
             local cx, cy = camera:getOffset()
             local sx, sy = coords.worldToScreen(self:getX(), self:getY(), self:getZ())
             love.graphics.draw(object.asset.image, cx + sx - object.asset.originX, cy + sy - object.asset.originY)
+            love.graphics.setColor(1, 1, 1)
         end
+
+        table.insert(object.instances, instance)
 
         return instance
     end
@@ -71,7 +85,7 @@ function compareDepth(a, b)
         return sxa < sxb
     end
 
-    return a.entity.uuid < b.entity.uuid
+    return a.entity.id < b.entity.id
 end
 
 function entity.list()
@@ -87,9 +101,20 @@ function entity.list()
         table.insert(self.entities, entity)
     end
 
+    function list:get(id)
+        for k, v in ipairs(self.entities) do
+            if v.id == id then
+                return v
+            end
+        end
+        return nil
+    end
+
     function list:addMany(other)
         for i, v in ipairs(other.entities) do
-            table.insert(self.entities, v)
+            if self:get(v.id) == nil then
+                table.insert(self.entities, v)
+            end
         end
     end
 

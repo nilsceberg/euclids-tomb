@@ -3,7 +3,7 @@ local coords = require "game.coords"
 local graphics = require "game.graphics"
 local entity = require "game.entity"
 
-local coroutine = require "coroutine"
+local uuid = require "uuid"
 
 map = {}
 
@@ -22,6 +22,7 @@ function map.new(tiles)
         width = #tiles[1],
         height = #tiles,
         entities = entity.list(),
+        instances = {}
     }
 
     for y=0,room.height-1 do
@@ -39,6 +40,8 @@ function map.new(tiles)
                     asset = assets.wall
                 elseif tileType == 3 then
                     asset = assets.pillar
+                elseif tileType == 4 then
+                    asset = assets.trigger
                 end
 
                 --local rx, ry = rotateCoords(x, y, rotation)
@@ -55,6 +58,7 @@ function map.new(tiles)
 
     function room:instantiate(anchor, rotation)
         local instance = {
+            uuid = uuid.new(),
             room = room,
             anchor = anchor or map.anchor(0, 0, 0, 0),
             rotation = rotation or 0,
@@ -64,13 +68,35 @@ function map.new(tiles)
         local rax, ray = coords.rotate(instance.anchor.x, instance.anchor.y, rotation)
         local ox, oy = instance.anchor.gx - rax, instance.anchor.gy - ray
 
-        for k, v in pairs(room.entities.entities) do
-            instance.entities:add(
-                v:instantiate(rotation, ox, oy, 0)
+        function instance:addEntity(entity)
+            self.entities:add(
+                entity:instantiate(rotation, ox, oy, 0, instance)
             )
         end
 
+        print("Copying entities from parent room")
+        for k, v in ipairs(room.entities.entities) do
+            print("Adding " .. k)
+            instance:addEntity(v)
+        end
+
+        print("Adding self to parent")
+        table.insert(room.instances, instance)
+
         return instance
+    end
+
+    function room:addEntity(entity)
+        self.entities:add(entity)
+        for i, instance in ipairs(self.instances) do
+            instance:addEntity(entity)
+        end
+    end
+
+    function room:addAllEntityInstancesTo(list)
+        for i, instance in ipairs(self.instances) do
+            list:addMany(instance.entities)
+        end
     end
 
     return room
