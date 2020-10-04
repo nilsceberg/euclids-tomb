@@ -32,13 +32,6 @@ local startRoom = rooms.intro:instantiate(map.anchor(0, 0, 0, 0, nil), 0)
 print("Creating player")
 local player = player.new(startRoom)
 
---rooms.intro:connect(map.connection(
---    4, 8, 1, 3, testRoom, 1
---))
---rooms.intro:connect(map.connection(
---    1, 3, 4, 8, testRoom, -1
---))
-
 local editTile = 1
 
 local globalContext = {
@@ -63,7 +56,13 @@ function love.update(dt)
     if entities.rebuild then
         print("Rebuilding main entity list")
         entities:clear()
-        player.currentRoomInstance.room:addAllEntityInstancesTo(entities)
+
+        entities:addMany(player.currentRoomInstance.entities)
+        for i, connected in ipairs(player.currentRoomInstance.connectedInstances) do
+            entities:addMany(connected.entities)
+        end
+
+        --player.currentRoomInstance.room:addAllEntityInstancesTo(entities)
         entities.rebuild = false
     end
 

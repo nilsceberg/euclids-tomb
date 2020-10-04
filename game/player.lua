@@ -21,7 +21,7 @@ function player.new(initialRoomInstance)
         -- Just pick one
         local playerInstance = player.currentRoomInstance.entities:getInstanceByEntityId(cube.id)
 
-        movement.move(playerInstance, 2.0, dt)
+        movement.move(playerInstance, 5.0, dt)
         cam.x, cam.y = playerInstance:getX(), playerInstance:getY()
 
         local ntx, nty = coords.tile(playerInstance:getX(), playerInstance:getY())

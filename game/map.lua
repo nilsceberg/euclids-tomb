@@ -189,6 +189,8 @@ function map.new(tiles, connections)
             end
             self.room.tiles[ry + 1][rx + 1] = tileType
             printMap(self.room.tiles)
+            
+            print(rx, ry)
 
             entities.rebuild = true
         end
