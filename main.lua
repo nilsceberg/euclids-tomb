@@ -77,19 +77,22 @@ function love.draw()
     entities:sort()
     entities:draw(cam, globalContext)
 
-    local editTileImage = nil
-    if editTile == 1 then
-        editTileImage = assets.tile.images[1]
-    elseif editTile == 2 then
-        editTileImage = assets.wall.images[1]
-    elseif editTile == 3 then
-        editTileImage = assets.pillar.images[1]
-    end
-    if editTileImage then
-        love.graphics.draw(editTileImage, 10, 10)
+    if devMode then
+        local editTileImage = nil
+        if editTile == 1 then
+            editTileImage = assets.tile.images[1]
+        elseif editTile == 2 then
+            editTileImage = assets.wall.images[1]
+        elseif editTile == 3 then
+            editTileImage = assets.pillar.images[1]
+        end
+        if editTileImage then
+            love.graphics.draw(editTileImage, 10, 10)
+        end
+
+        love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10)
     end
 
-    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10)
 --    love.graphics.setColor(0.3, 0.3, 0.3)
 --    love.graphics.rectangle("fill", 10, 10, 64, 32)
 --    love.graphics.setColor(1.0, 1.0, 1.0)
@@ -107,7 +110,9 @@ function handleMouseDown(x, y)
     wx, wy = coords.screenToWorld(x - cx, y - cy)
     tx, ty = coords.tile(wx, wy)
 
-    player.currentRoomInstance:setTile(tx, ty, editTile, entities)
+    if devMode then
+        player.currentRoomInstance:setTile(tx, ty, editTile, entities)
+    end
 
     --if x > 10 and x < 74 and y > 10 and y < 42 then
     --    (require "os").execute("gnome-terminal -- vim conf.lua")

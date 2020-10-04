@@ -21,7 +21,7 @@ function player.new(initialRoomInstance)
         -- Just pick one
         local playerInstance = player.currentRoomInstance.entities:getInstanceByEntityId(cube.id)
 
-        movement.move(playerInstance, 5.0, dt)
+        movement.move(playerInstance, 3.0, dt)
         cam.x, cam.y = playerInstance:getX(), playerInstance:getY()
 
         local ntx, nty = coords.tile(playerInstance:getX(), playerInstance:getY())
@@ -57,7 +57,7 @@ function player.new(initialRoomInstance)
 
             -- Change color on found tiles for testing
             for i, e in ipairs(es) do
-                e.entity.color = {1, 0, 0}
+                --e.entity.color = {1, 0, 0}
             end
         end
     end
