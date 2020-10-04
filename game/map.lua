@@ -105,6 +105,8 @@ function map.new(tiles, name, onEnter)
             entities = entity.list(),
             connectedInstances = {},
             active = false,
+            fow = true,
+            fowRange = 4
         }
 
         local rax, ray = coords.rotate(anchor.x, anchor.y, rotation)
@@ -119,6 +121,15 @@ function map.new(tiles, name, onEnter)
 
         instance.offsetX = ox
         instance.offsetY = oy
+
+        function instance:update(dt)
+            if self.active then
+                self.fowRange = self.fowRange * (1 + 3 * dt)
+            end
+            if self.fowRange > 1000.0 then
+                self.fow = false
+            end
+        end
 
         function instance:addEntity(entity)
             self.entities:add(

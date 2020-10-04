@@ -48,6 +48,11 @@ function player.new(initialRoomInstance)
                 entities.rebuild = true
             end
         end
+
+        self.currentRoomInstance:update(dt)
+        for i, roomInstance in ipairs(self.currentRoomInstance.connectedInstances) do
+            roomInstance:update(dt)
+        end
     end
 
     function player:keyPress(key, entities)
