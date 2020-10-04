@@ -17,15 +17,15 @@ function player.new(initialRoomInstance)
 
     function player:update(dt, cam, entities)
         -- Just pick one
-        local playerInstance = cube.instances[1]
+        local playerInstance = player.currentRoomInstance.entities:getInstanceByEntityId(cube.id)
 
         -- Maybe we actually want to control the instance of the cube
         -- and not sort of the object itself...? Doesn't really make
         -- a difference, I suppose.
-        movement.move(cube, 2.0, dt)
+        movement.move(playerInstance, 2.0, dt)
         cam.x, cam.y = playerInstance:getX(), playerInstance:getY()
 
-        local ntx, nty = coords.tile(cube.x, cube.y)
+        local ntx, nty = coords.tile(playerInstance:getX(), playerInstance:getY())
 
         if not (ntx == player.currentTileX and nty == player.currentTileY) then
             player.currentTileX, player.currentTileY = ntx, nty
@@ -33,8 +33,19 @@ function player.new(initialRoomInstance)
 
             local es = entities:findAtTile(ntx, nty, cube.id)
             if #es > 0 and es[1].roomInstance.id ~= player.currentRoomInstance.id then
-                print("Moved to room ", es[1].roomInstance.id)
-                player.currentRoomInstance = es[1].roomInstance
+                local newRoom = es[1].roomInstance
+                print("Moved to room ", newRoom.room)
+
+                player.currentRoomInstance.room:removeEntity(cube)
+
+                -- Recalculate coordinates relative to new room instance
+                cube.x, cube.y = coords.mapRoom(player.currentRoomInstance, newRoom, cube.x, cube.y)
+
+                newRoom.room:addEntity(cube)
+                entities.rebuild = true
+
+                --player.currentTileX, player.currentTileY = coords.tile(cube.x, cube.y)
+                player.currentRoomInstance = newRoom
             end
         end
     end

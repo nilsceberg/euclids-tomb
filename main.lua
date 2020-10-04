@@ -33,21 +33,28 @@ local font = love.graphics.getFont()
 local settings = love.graphics.newText(font, "Settings")
 
 local entities = entity.list()
+entities.rebuild = true
 
 print("Instantiating room 1")
-local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0), 0)
+local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0, nil), 0)
 print("Instantiating room 2")
-local room2 = testRoom:instantiate(map.anchor(1, 3, 4, 8), 1)
+local room2 = testRoom:instantiate(map.anchor(1, 3, 4, 8, room1), 1)
 print("Instantiating room 3")
-local room3 = testRoom:instantiate(map.anchor(1, 3, -1, 11), 2)
+local room3 = testRoom:instantiate(map.anchor(1, 3, 4, 8, room2), 2)
 print("Instantiating room 4")
-local room4 = testRoom:instantiate(map.anchor(1, 3, -4, 6), 3)
+local room4 = testRoom:instantiate(map.anchor(1, 3, 4, 8, room3), 3)
+
+--print("Instantiating room 1")
+--local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0), 0)
+--print("Instantiating room 2")
+--local room2 = testRoom:instantiate(map.anchor(1, 3, 4, 8), 1)
+--print("Instantiating room 3")
+--local room3 = testRoom:instantiate(map.anchor(1, 3, -1, 11), 2)
+--print("Instantiating room 4")
+--local room4 = testRoom:instantiate(map.anchor(1, 3, -4, 6), 3)
 
 print("Creating player")
 local player = player.new(room1)
-
-print("Registering all entities")
-testRoom:addAllEntityInstancesTo(entities)
 
 local globalContext = {
     player = player
@@ -64,6 +71,13 @@ end
 function love.update(dt)
     t = t + dt
     player:update(dt, cam, entities)
+
+    if entities.rebuild then
+        print("Rebuilding main entity list")
+        entities:clear()
+        testRoom:addAllEntityInstancesTo(entities)
+        entities.rebuild = false
+    end
 end
 
 function love.draw()

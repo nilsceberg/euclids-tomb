@@ -2,7 +2,7 @@ local coords = require "game.coords"
 
 local movement = {}
 
-function movement.move(entity, speed, dt)
+function movement.move(instance, speed, dt)
     local vx = 0
     local vy = 0
 
@@ -31,8 +31,12 @@ function movement.move(entity, speed, dt)
     vx = vx / l
     vy = vy / l
 
-    entity.x = entity.x + speed * vx * dt
-    entity.y = entity.y + speed * vy * dt
+    -- rotate movement vector in opposite direction from room rotation
+    -- so that screen directions are preserved
+    vx, vy = coords.rotate(vx, vy, -instance.roomInstance.rotation)
+
+    instance.entity.x = instance.entity.x + speed * vx * dt
+    instance.entity.y = instance.entity.y + speed * vy * dt
 
     return true
 end

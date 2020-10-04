@@ -7,12 +7,13 @@ local uuid = require "uuid"
 
 map = {}
 
-function map.anchor(x, y, gx, gy)
+function map.anchor(x, y, gx, gy, instance)
     return {
         x = x,
         y = y,
         gx = gx,
         gy = gy,
+        instance = instance,
     }
 end
 
@@ -65,8 +66,15 @@ function map.new(tiles)
             entities = entity.list(),
         }
 
-        local rax, ray = coords.rotate(instance.anchor.x, instance.anchor.y, rotation)
-        local ox, oy = instance.anchor.gx - rax, instance.anchor.gy - ray
+        local rax, ray = coords.rotate(anchor.x, anchor.y, rotation)
+        local gx, gy = coords.instanceToWorld(anchor.instance, anchor.gx, anchor.gy)
+        local ox, oy = gx - rax, gy - ray
+
+        print(gx, gy)
+        print(ox, oy)
+
+        instance.offsetX = ox
+        instance.offsetY = oy
 
         function instance:addEntity(entity)
             self.entities:add(
@@ -74,13 +82,17 @@ function map.new(tiles)
             )
         end
 
-        print("Copying entities from parent room")
+        function instance:removeEntity(entity)
+            self.entities:removeInstanceByEntityId(entity.id)
+        end
+
+        --print("Copying entities from parent room")
         for k, v in ipairs(room.entities.entities) do
-            print("Adding " .. k)
+            --print("Adding " .. k)
             instance:addEntity(v)
         end
 
-        print("Adding self to parent")
+        --print("Adding self to parent")
         table.insert(room.instances, instance)
 
         return instance
@@ -91,6 +103,14 @@ function map.new(tiles)
         for i, instance in ipairs(self.instances) do
             instance:addEntity(entity)
         end
+    end
+
+    function room:removeEntity(entity)
+        self.entities:remove(entity.id)
+        for i, instance in ipairs(self.instances) do
+            instance:removeEntity(entity)
+        end
+
     end
 
     function room:addAllEntityInstancesTo(list)

@@ -30,6 +30,7 @@ function entity.new(asset, x, y, z, d, layer)
             id = uuid.new(),
             entity = object,
             roomInstance = roomInstance,
+            rotation = rotation,
         }
 
         setmetatable(instance, {
@@ -101,6 +102,10 @@ function entity.list()
         entities = {},
     }
 
+    function list:clear()
+        self.entities = {}
+    end
+
     function list:sort()
         table.sort(self.entities, compareDepth)
     end
@@ -110,12 +115,31 @@ function entity.list()
     end
 
     function list:get(id)
-        for k, v in ipairs(self.entities) do
+        for i, v in ipairs(self.entities) do
             if v.id == id then
-                return v
+                return v, i
             end
         end
         return nil
+    end
+
+    function list:remove(id)
+        local e, i = self:get(id)
+        table.remove(self.entities, i)
+    end
+
+    function list:getInstanceByEntityId(id)
+        for i, v in ipairs(self.entities) do
+            if v.entity.id == id then
+                return v, i
+            end
+        end
+        return nil
+    end
+
+    function list:removeInstanceByEntityId(id)
+        local e, i = self:getInstanceByEntityId(id)
+        table.remove(self.entities, i)
     end
 
     function list:addMany(other)
