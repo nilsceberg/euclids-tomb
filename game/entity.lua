@@ -130,6 +130,19 @@ function entity.list()
         end
     end
 
+    -- Assumes EntityInstances
+    -- Why, oh why, do I use the same structure for both types?
+    function list:findAtTile(x, y, excludeId)
+        local results = {}
+        for k, e in ipairs(self.entities) do
+            local ex, ey = coords.tile(e:getX(), e:getY())
+            if e.entity.id ~= excludeId and x == ex and y == ey then
+                table.insert(results, e.entity)
+            end
+        end
+        return results
+    end
+
     return list
 end
 

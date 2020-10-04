@@ -52,6 +52,8 @@ testRoom:addAllEntityInstancesTo(entities)
 function love.keypressed(key)
     if key == "escape" then
         love.event.quit()
+    else
+        player:keyPress(key, entities)
     end
 end
 
