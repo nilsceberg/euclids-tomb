@@ -23,7 +23,7 @@ function map.new(tiles)
         width = #tiles[1],
         height = #tiles,
         entities = entity.list(),
-        instances = {}
+        instances = {},
     }
 
     for y=0,room.height-1 do

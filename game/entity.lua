@@ -57,9 +57,14 @@ function entity.new(asset, x, y, z, d, layer)
             local r, g, b = unpack(self.entity.color)
 
             if self.roomInstance.id ~= context.player.currentRoomInstance.id then
-                r = r * 0.2
-                g = g * 0.2
-                b = b * 0.2
+                local fowDistance = math.sqrt((self.roomInstance.anchor.x - self.entity.x)^2 + (self.roomInstance.anchor.y - self.entity.y)^2)
+
+                local FOW_RANGE = 5
+                fowFactor = 1 - math.min(fowDistance, FOW_RANGE) / FOW_RANGE
+
+                r = r * fowFactor
+                g = g * fowFactor
+                b = b * fowFactor
             end
 
             love.graphics.setColor(r, g, b)
