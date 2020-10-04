@@ -62,8 +62,8 @@ function entity.new(asset, x, y, z, d, layer, autofade, map)
             if self.roomInstance.fow then
                 local fowDistance = math.sqrt((self.roomInstance.anchor.x - self.entity.x)^2 + (self.roomInstance.anchor.y - self.entity.y)^2)
 
-                local FOW_RANGE = self.roomInstance.fowRange
-                fowFactor = 1 - math.min(fowDistance, FOW_RANGE) / FOW_RANGE
+                local FADE_RANGE = 4 --= self.roomInstance.fowRange
+                fowFactor = 1 - math.min(fowDistance - self.roomInstance.fowRange, FADE_RANGE) / FADE_RANGE
 
                 r = r * fowFactor
                 g = g * fowFactor

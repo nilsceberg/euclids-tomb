@@ -106,7 +106,7 @@ function map.new(tiles, name, onEnter)
             connectedInstances = {},
             active = false,
             fow = true,
-            fowRange = 4
+            fowRange = 0
         }
 
         local rax, ray = coords.rotate(anchor.x, anchor.y, rotation)
@@ -124,9 +124,9 @@ function map.new(tiles, name, onEnter)
 
         function instance:update(dt)
             if self.active then
-                self.fowRange = self.fowRange * (1 + 3 * dt)
+                self.fowRange = self.fowRange + 10 * dt --* (1 + 2 * dt)
             end
-            if self.fowRange > 1000.0 then
+            if self.fowRange > 100.0 then
                 self.fow = false
             end
         end
