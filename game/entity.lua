@@ -65,7 +65,7 @@ function entity.new(asset, x, y, z, d, layer)
             love.graphics.setColor(r, g, b)
             local cx, cy = camera:getOffset()
             local sx, sy = coords.worldToScreen(self:getX(), self:getY(), self:getZ())
-            love.graphics.draw(object.asset.image, cx + sx - object.asset.originX, cy + sy - object.asset.originY)
+            object.asset:draw(cx + sx - object.asset.originX, cy + sy - object.asset.originY, rotation)
             love.graphics.setColor(1, 1, 1)
         end
 

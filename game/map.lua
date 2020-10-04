@@ -43,6 +43,8 @@ function map.new(tiles)
                     asset = assets.pillar
                 elseif tileType == 4 then
                     asset = assets.trigger
+                elseif tileType == 5 then
+                    asset = assets.compass
                 end
 
                 --local rx, ry = rotateCoords(x, y, rotation)
