@@ -49,21 +49,23 @@ function map.new(tiles, connections)
                 local asset = nil
                 if tileType == 1 then
                     asset = assets.tile
-                elseif tileType == 2 then
-                    asset = assets.wall
                 elseif tileType == 3 then
                     asset = assets.pillar
                 elseif tileType == 4 then
                     asset = assets.trigger
                 elseif tileType == 5 then
                     asset = assets.compass
+                elseif tileType == 10 then
+                    asset = assets.wallNorth
+                elseif tileType == 11 then
+                    asset = assets.wallEast
+                elseif tileType == 12 then
+                    asset = assets.wallSouth
+                elseif tileType == 13 then
+                    asset = assets.wallWest
                 end
 
-                --local rx, ry = rotateCoords(x, y, rotation)
-
                 if asset ~= nil then
-                    -- TODO: use the same entities
-                    --local e = entity.new(asset, rx + ox, ry + oy, 0, depth, layer)
                     local e = entity.new(asset, x, y, 0, depth, asset.layer)
                     room.entities:add(e)
                 end
