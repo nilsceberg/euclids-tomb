@@ -7,6 +7,7 @@ local movement = require "game.movement"
 local audio = require "game.audio"
 local player = require "game.player"
 local coords = require "game.coords"
+local rooms = require "game.rooms"
 
 local t = 0
 local N = 0
@@ -16,17 +17,6 @@ function love.load()
 end
 
 local audioController = audio.controller()
- 
-local testRoom = map.new({
-    { 0, 2, 2, 2, 0, 0, 0 },
-    { 0, 2, 1, 2, 2, 2, 2, },
-    { 0, 2, 1, 1, 1, 1, 2 },
-    { 0, {1}, 1, 1, {1, 5}, 1, 2 },
-    { 0, 2, 1, 1, 1, 1, 2 },
-    { 0, 2, 1, 1, {1, 3}, 1, 2 },
-    { 0, 2, 1, 1, 1, 1, 2 },
-    { 0, 2, 2, 2, {1}, 2, 2 },
-})
 
 local cam = camera.new()
 
@@ -37,17 +27,17 @@ local entities = entity.list()
 entities.rebuild = true
 
 print("Instantiating room 1")
-local room1 = testRoom:instantiate(map.anchor(0, 0, 0, 0, nil), 0)
+local startRoom = rooms.intro:instantiate(map.anchor(0, 0, 0, 0, nil), 0)
 
 print("Creating player")
-local player = player.new(room1)
+local player = player.new(startRoom)
 
-testRoom:connect(map.connection(
-    4, 8, 1, 3, testRoom, 1
-))
-testRoom:connect(map.connection(
-    1, 3, 4, 8, testRoom, -1
-))
+--rooms.intro:connect(map.connection(
+--    4, 8, 1, 3, testRoom, 1
+--))
+--rooms.intro:connect(map.connection(
+--    1, 3, 4, 8, testRoom, -1
+--))
 
 local editTile = 1
 
@@ -73,8 +63,12 @@ function love.update(dt)
     if entities.rebuild then
         print("Rebuilding main entity list")
         entities:clear()
-        testRoom:addAllEntityInstancesTo(entities)
+        player.currentRoomInstance.room:addAllEntityInstancesTo(entities)
         entities.rebuild = false
+    end
+
+    if love.mouse.isDown(1) then
+        handleMouseDown(love.mouse.getX(), love.mouse.getY())
     end
 end
 
@@ -104,16 +98,15 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button)
+end
+
+function handleMouseDown(x, y)
     x = x / 2
     y = y / 2
-
-    print(x, y)
 
     cx, cy = cam:getOffset()
     wx, wy = coords.screenToWorld(x - cx, y - cy)
     tx, ty = coords.tile(wx, wy)
-
-    print(tx, ty)
 
     player.currentRoomInstance:setTile(tx, ty, editTile, entities)
 

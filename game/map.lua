@@ -13,25 +13,23 @@ function printMap(tiles)
     for y=1,#tiles do
         io.write("{ ")
         for x=1,#tiles[y] do
-            if x ~= #tiles[y] then
-                if type(tiles[y][x]) == "table" then
-                    io.write("{ ")
-                    for d=1,#tiles[y][x] do
-                        io.write(tostring(tiles[y][x][d]))
-                        if d ~= #tiles[y][x] then
-                            io.write(", ")
-                        end
+            if type(tiles[y][x]) == "table" then
+                io.write("{ ")
+                for d=1,#tiles[y][x] do
+                    io.write(tostring(tiles[y][x][d]))
+                    if d ~= #tiles[y][x] then
+                        io.write(", ")
                     end
-                    io.write(" }")
-                else
-                    io.write(tostring(tiles[y][x]))
                 end
-                if x ~= #tiles[y] then
-                    io.write(", ")
-                end
+                io.write(" }")
+            else
+                io.write(tostring(tiles[y][x]))
+            end
+            if x ~= #tiles[y] then
+                io.write(", ")
             end
         end
-        print(" }")
+        print(" },")
     end
     print("}")
 end
@@ -186,8 +184,10 @@ function map.new(tiles, connections)
                 end
             end
 
+            if tileType ~= 0 then
+                addMapEntity(rx, ry, tileType, self.room)
+            end
             self.room.tiles[ry + 1][rx + 1] = tileType
-            addMapEntity(rx, ry, tileType, self.room)
             printMap(self.room.tiles)
 
             entities.rebuild = true
