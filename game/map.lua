@@ -58,7 +58,7 @@ function map.new(tiles)
 
     function room:instantiate(anchor, rotation)
         local instance = {
-            uuid = uuid.new(),
+            id = uuid.new(),
             room = room,
             anchor = anchor or map.anchor(0, 0, 0, 0),
             rotation = rotation or 0,

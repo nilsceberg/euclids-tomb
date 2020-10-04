@@ -49,6 +49,10 @@ local player = player.new(room1)
 print("Registering all entities")
 testRoom:addAllEntityInstancesTo(entities)
 
+local globalContext = {
+    player = player
+}
+
 function love.keypressed(key)
     if key == "escape" then
         love.event.quit()
@@ -66,7 +70,7 @@ function love.draw()
     love.graphics.scale(graphics.SCALE, graphics.SCALE)
 
     entities:sort()
-    entities:draw(cam)
+    entities:draw(cam, globalContext)
 
 --    love.graphics.setColor(0.3, 0.3, 0.3)
 --    love.graphics.rectangle("fill", 10, 10, 64, 32)

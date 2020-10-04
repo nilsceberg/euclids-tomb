@@ -52,8 +52,16 @@ function entity.new(asset, x, y, z, d, layer)
             return object.z + oz
         end
 
-        function instance:draw(camera)
-            love.graphics.setColor(unpack(self.entity.color))
+        function instance:draw(camera, context)
+            local r, g, b = unpack(self.entity.color)
+
+            if self.roomInstance.id ~= context.player.currentRoomInstance.id then
+                r = r * 0.2
+                g = g * 0.2
+                b = b * 0.2
+            end
+
+            love.graphics.setColor(r, g, b)
             local cx, cy = camera:getOffset()
             local sx, sy = coords.worldToScreen(self:getX(), self:getY(), self:getZ())
             love.graphics.draw(object.asset.image, cx + sx - object.asset.originX, cy + sy - object.asset.originY)
@@ -124,9 +132,9 @@ function entity.list()
         end
     end
 
-    function list:draw(camera)
+    function list:draw(camera, context)
         for k, v in ipairs(self.entities) do
-            v:draw(camera)
+            v:draw(camera, context)
         end
     end
 
@@ -137,7 +145,7 @@ function entity.list()
         for k, e in ipairs(self.entities) do
             local ex, ey = coords.tile(e:getX(), e:getY())
             if e.entity.id ~= excludeId and x == ex and y == ey then
-                table.insert(results, e.entity)
+                table.insert(results, e)
             end
         end
         return results

@@ -24,6 +24,19 @@ function player.new(initialRoomInstance)
         -- a difference, I suppose.
         movement.move(cube, 2.0, dt)
         cam.x, cam.y = playerInstance:getX(), playerInstance:getY()
+
+        local ntx, nty = coords.tile(cube.x, cube.y)
+
+        if not (ntx == player.currentTileX and nty == player.currentTileY) then
+            player.currentTileX, player.currentTileY = ntx, nty
+            print("Player moved to ", player.currentTileX, player.currentTileY)
+
+            local es = entities:findAtTile(ntx, nty, cube.id)
+            if #es > 0 and es[1].roomInstance.id ~= player.currentRoomInstance.id then
+                print("Moved to room ", es[1].roomInstance.id)
+                player.currentRoomInstance = es[1].roomInstance
+            end
+        end
     end
 
     function player:keyPress(key, entities)
@@ -33,7 +46,7 @@ function player.new(initialRoomInstance)
 
             -- Change color on found tiles for testing
             for i, e in ipairs(es) do
-                e.color = {1, 0, 0}
+                e.entity.color = {1, 0, 0}
             end
         end
     end
