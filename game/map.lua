@@ -49,6 +49,8 @@ function map.new(tiles, connections)
                 local asset = nil
                 if tileType == 1 then
                     asset = assets.tile
+                elseif tileType == 2 then
+                    asset = assets.wall
                 elseif tileType == 3 then
                     asset = assets.pillar
                 elseif tileType == 4 then
@@ -66,7 +68,7 @@ function map.new(tiles, connections)
                 end
 
                 if asset ~= nil then
-                    local e = entity.new(asset, x, y, 0, depth, asset.layer)
+                    local e = entity.new(asset, x, y, 0, depth, asset.layer, tileType == 2)
                     room.entities:add(e)
                 end
             end

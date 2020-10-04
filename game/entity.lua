@@ -6,7 +6,7 @@ local coords = require "game.coords"
 
 local entity = {}
 
-function entity.new(asset, x, y, z, d, layer)
+function entity.new(asset, x, y, z, d, layer, autofade)
     local object = {
         asset = asset,
         x = x,
@@ -16,7 +16,8 @@ function entity.new(asset, x, y, z, d, layer)
         layer = layer or 0,
         id = uuid.new(),
         instances = {},
-        color = {1,1,1}
+        color = {1,1,1},
+        autofade = autofade or false
     }
 
     setmetatable(object, {
@@ -66,6 +67,16 @@ function entity.new(asset, x, y, z, d, layer)
                 g = g * fowFactor
                 b = b * fowFactor
             end
+
+            --if self.entity.autofade then
+            --    local tx, ty = coords.tile(self:getX(), self.getY())
+            --    local shadowed = context.entities:findAtTile(tx - 1, ty - 1)
+            --    for i, entity in ipairs(shadowed) do
+            --        if entity.roomInstance.active then
+            --            return
+            --        end
+            --    end
+            --end
 
             love.graphics.setColor(r, g, b)
             local cx, cy = camera:getOffset()

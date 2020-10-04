@@ -17,14 +17,14 @@ end
 local audioController = audio.controller()
  
 local testRoom = map.new({
-    { 0, 10, 10, 10, 0, 0, 0 },
-    { 0, 13, 1, 10, 10, 10, 10 },
-    { 0, 13, 1, 1, 1, 1, 11 },
-    { 0, {1}, 1, 1, {1, 5}, 1, 11 },
-    { 0, 13, 1, 1, 1, 1, 11 },
-    { 0, 13, 1, 1, {1, 3}, 1, 11 },
-    { 0, 13, 1, 1, 1, 1, 11 },
-    { 0, 12, 12, 12, {1}, 12, 12 },
+    { 0, 2, 2, 2, 0, 0, 0 },
+    { 0, 2, 1, 2, 2, 2, 2, },
+    { 0, 2, 1, 1, 1, 1, 2 },
+    { 0, {1}, 1, 1, {1, 5}, 1, 2 },
+    { 0, 2, 1, 1, 1, 1, 2 },
+    { 0, 2, 1, 1, {1, 3}, 1, 2 },
+    { 0, 2, 1, 1, 1, 1, 2 },
+    { 0, 2, 2, 2, {1}, 2, 2 },
 })
 
 local cam = camera.new()
@@ -49,7 +49,8 @@ testRoom:connect(map.connection(
 ))
 
 local globalContext = {
-    player = player
+    player = player,
+    entities = entities,
 }
 
 function love.keypressed(key)

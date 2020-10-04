@@ -55,6 +55,7 @@ return {
     tile = loadImage("tile", 0),
     trigger = loadImage("trigger", 0),
 
+    wall = loadImage("wall", 1),
     wallNorth = loadImage("wall", nil, nil, "wall", 1),
     wallEast = loadImage(nil, nil, "wall", "wall", 1),
     wallSouth = loadImage(nil, "wall", "wall", nil, 1),
