@@ -4,8 +4,37 @@ local graphics = require "game.graphics"
 local entity = require "game.entity"
 
 local uuid = require "uuid"
+local io = require "io"
 
 map = {}
+
+function printMap(tiles)
+    print("{")
+    for y=1,#tiles do
+        io.write("{ ")
+        for x=1,#tiles[y] do
+            if x ~= #tiles[y] then
+                if type(tiles[y][x]) == "table" then
+                    io.write("{ ")
+                    for d=1,#tiles[y][x] do
+                        io.write(tostring(tiles[y][x][d]))
+                        if d ~= #tiles[y][x] then
+                            io.write(", ")
+                        end
+                    end
+                    io.write(" }")
+                else
+                    io.write(tostring(tiles[y][x]))
+                end
+                if x ~= #tiles[y] then
+                    io.write(", ")
+                end
+            end
+        end
+        print(" }")
+    end
+    print("}")
+end
 
 function map.anchor(x, y, gx, gy, instance)
     return {
@@ -28,6 +57,35 @@ function map.connection(outX, outY, inX, inY, intoRoom, relativeRotation)
     }
 end
 
+function addMapEntity(x, y, tileType, room)
+    local asset = nil
+    if tileType == 1 then
+        asset = assets.tile
+    elseif tileType == 2 then
+        asset = assets.wall
+    elseif tileType == 3 then
+        asset = assets.pillar
+    elseif tileType == 4 then
+        asset = assets.trigger
+    elseif tileType == 5 then
+        asset = assets.compass
+    elseif tileType == 10 then
+        asset = assets.wallNorth
+    elseif tileType == 11 then
+        asset = assets.wallEast
+    elseif tileType == 12 then
+        asset = assets.wallSouth
+    elseif tileType == 13 then
+        asset = assets.wallWest
+    end
+
+    if asset ~= nil then
+        local e = entity.new(asset, x, y, 0, depth, asset.layer, tileType == 2, true)
+        --entities:add(e)
+        room:addEntity(e)
+    end
+end
+
 function map.new(tiles, connections)
     local room = {
         tiles = tiles,
@@ -37,43 +95,6 @@ function map.new(tiles, connections)
         instances = {},
         connections = connections or {},
     }
-
-    for y=0,room.height-1 do
-        for x=0,room.width-1 do
-            local tileTypes = room.tiles[y + 1][x + 1]
-            if type(tileTypes) ~= "table" then
-                tileTypes = {tileTypes}
-            end
-
-            for depth, tileType in ipairs(tileTypes) do
-                local asset = nil
-                if tileType == 1 then
-                    asset = assets.tile
-                elseif tileType == 2 then
-                    asset = assets.wall
-                elseif tileType == 3 then
-                    asset = assets.pillar
-                elseif tileType == 4 then
-                    asset = assets.trigger
-                elseif tileType == 5 then
-                    asset = assets.compass
-                elseif tileType == 10 then
-                    asset = assets.wallNorth
-                elseif tileType == 11 then
-                    asset = assets.wallEast
-                elseif tileType == 12 then
-                    asset = assets.wallSouth
-                elseif tileType == 13 then
-                    asset = assets.wallWest
-                end
-
-                if asset ~= nil then
-                    local e = entity.new(asset, x, y, 0, depth, asset.layer, tileType == 2)
-                    room.entities:add(e)
-                end
-            end
-        end
-    end
 
     function room:instantiate(anchor, rotation)
         local instance = {
@@ -151,15 +172,25 @@ function map.new(tiles, connections)
             end
         end
 
-        function room:setTile(x, y, tileType)
-            local rx, ry = coords.worldToInstance(self, x, y)
-            if rx < 0 or ry < 0 then
+        function instance:setTile(wx, wy, tileType, entities)
+            local rx, ry = coords.worldToInstance(self, wx, wy)
+            if rx < 0 or ry < 0 or rx >= self.room.width or ry >= self.room.height then
                 return
             end
 
-            if rx > 0 then
-                -- eh idk if this is worth it
+            local oldTiles = entities:findAtTile(wx, wy)
+            for i, e in ipairs(oldTiles) do
+                if e.entity.map then
+                    print("Removing ", e)
+                    self.room:removeEntity(e.entity)
+                end
             end
+
+            self.room.tiles[ry + 1][rx + 1] = tileType
+            addMapEntity(rx, ry, tileType, self.room)
+            printMap(self.room.tiles)
+
+            entities.rebuild = true
         end
 
         --print("Copying entities from parent room")
@@ -206,6 +237,19 @@ function map.new(tiles, connections)
     function room:addAllEntityInstancesTo(list)
         for i, instance in ipairs(self.instances) do
             list:addMany(instance.entities)
+        end
+    end
+
+    for y=0,room.height-1 do
+        for x=0,room.width-1 do
+            local tileTypes = room.tiles[y + 1][x + 1]
+            if type(tileTypes) ~= "table" then
+                tileTypes = {tileTypes}
+            end
+
+            for depth, tileType in ipairs(tileTypes) do
+                addMapEntity(x, y, tileType, room)
+            end
         end
     end
 

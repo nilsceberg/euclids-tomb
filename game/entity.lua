@@ -6,7 +6,7 @@ local coords = require "game.coords"
 
 local entity = {}
 
-function entity.new(asset, x, y, z, d, layer, autofade)
+function entity.new(asset, x, y, z, d, layer, autofade, map)
     local object = {
         asset = asset,
         x = x,
@@ -17,7 +17,8 @@ function entity.new(asset, x, y, z, d, layer, autofade)
         id = uuid.new(),
         instances = {},
         color = {1,1,1},
-        autofade = autofade or false
+        autofade = autofade or false,
+        map = map or false
     }
 
     setmetatable(object, {

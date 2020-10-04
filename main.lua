@@ -115,7 +115,7 @@ function love.mousepressed(x, y, button)
 
     print(tx, ty)
 
-    --player.currentRoomInstance:setTile(tx, ty, editTile)
+    player.currentRoomInstance:setTile(tx, ty, editTile, entities)
 
     --if x > 10 and x < 74 and y > 10 and y < 42 then
     --    (require "os").execute("gnome-terminal -- vim conf.lua")
