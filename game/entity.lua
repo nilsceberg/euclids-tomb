@@ -58,7 +58,6 @@ function entity.new(asset, x, y, z, d, layer, autofade, map)
         function instance:draw(camera, context)
             local r, g, b = unpack(self.entity.color)
 
-            --if self.roomInstance.id ~= context.player.currentRoomInstance.id then
             if self.roomInstance.fow then
                 local fowDistance = math.sqrt((self.roomInstance.anchor.x - self.entity.x)^2 + (self.roomInstance.anchor.y - self.entity.y)^2)
 
@@ -68,6 +67,19 @@ function entity.new(asset, x, y, z, d, layer, autofade, map)
                 r = r * fowFactor
                 g = g * fowFactor
                 b = b * fowFactor
+
+                -- Now, let's also fade based on our anchor's world distance to player
+                if self.roomInstance.id ~= context.player.currentRoomInstance.id then
+                    local fowDistance = math.sqrt((self:getX() - context.player.playerInstance:getX())^2 + (self:getY() - context.player.playerInstance:getY())^2)
+
+                    local FADE_RANGE = 8 --= self.roomInstance.fowRange
+                    --fowFactor = math.max(0.2, 1 - math.min(fowDistance - self.roomInstance.fowRange, FADE_RANGE) / FADE_RANGE)
+                    fowFactor = 1 - math.min(fowDistance - self.roomInstance.fowRange, FADE_RANGE) / FADE_RANGE
+
+                    r = r * fowFactor
+                    g = g * fowFactor
+                    b = b * fowFactor
+                end
             end
             --end
 

@@ -10,6 +10,7 @@ function player.new(initialRoomInstance)
         currentRoomInstance = initialRoomInstance,
         currentTileX = 3,
         currentTileY = 3,
+        playerInstance = nil,
     }
 
     local cube = entity.new(assets.cube, player.currentTileX, player.currentTileY, 0, 1, 1)
@@ -20,6 +21,7 @@ function player.new(initialRoomInstance)
     function player:update(dt, cam, entities)
         -- Just pick one
         local playerInstance = player.currentRoomInstance.entities:getInstanceByEntityId(cube.id)
+        player.playerInstance = playerInstance
 
         movement.move(playerInstance, 3.0, dt)
         cam.x, cam.y = playerInstance:getX(), playerInstance:getY()
