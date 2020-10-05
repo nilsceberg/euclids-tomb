@@ -62,6 +62,8 @@ return {
     wallSouth = loadImage("back-wall", "wall", "wall", "back-wall", 1),
     wallWest = loadImage("wall", "wall", "back-wall", "back-wall", 1),
 
+    lever = loadImage("lever-north", "trigger", "trigger", "trigger", 1),
+
     pillar = loadImage("pillar", 1),
     cube = loadImage("cube", 1),
     compass = loadImage("compass-0", "compass-1", "compass-2", "compass-3", 1),

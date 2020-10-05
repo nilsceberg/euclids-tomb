@@ -80,6 +80,8 @@ function addMapEntity(x, y, tileType, room)
         asset = assets.trigger
     elseif tileType == 5 then
         asset = assets.backWall
+    elseif tileType == 6 then
+        asset = assets.lever
     end
 
     if asset ~= nil then
