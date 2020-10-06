@@ -66,7 +66,7 @@ function entity.new(asset, x, y, z, d, layer, autofade, map, rotation)
                 if self.roomInstance.active then
                     local fowDistance = math.sqrt((self.roomInstance.anchor.x - self.entity.x)^2 + (self.roomInstance.anchor.y - self.entity.y)^2)
 
-                    local fowFactor = 1 - math.min(fowDistance - self.roomInstance.fowRange, FADE_RANGE) / FADE_RANGE
+                    local fowFactor = 1 - math.min(fowDistance - (self.roomInstance.fowRange - FADE_RANGE), FADE_RANGE) / FADE_RANGE
 
                     r = r * fowFactor
                     g = g * fowFactor
@@ -78,7 +78,7 @@ function entity.new(asset, x, y, z, d, layer, autofade, map, rotation)
                 if not self.roomInstance.active then
                     local visionDistance = math.sqrt((self:getX() - context.player.playerInstance:getX())^2 + (self:getY() - context.player.playerInstance:getY())^2)
 
-                    local VISION_RANGE = 4 --= self.roomInstance.fowRange
+                    local VISION_RANGE = context.player.visionRange --= self.roomInstance.fowRange
                     --fowFactor = math.max(0.2, 1 - math.min(fowDistance - self.roomInstance.fowRange, VISION_RANGE) / VISION_RANGE)
                     local fowFactor = 1 - math.min(visionDistance - self.roomInstance.fowRange, VISION_RANGE) / VISION_RANGE
 
@@ -90,7 +90,7 @@ function entity.new(asset, x, y, z, d, layer, autofade, map, rotation)
                     local fowDistance = math.sqrt((self.roomInstance.anchor.x - self.entity.x)^2 + (self.roomInstance.anchor.y - self.entity.y)^2)
 
                     local activeRoomFowFactor = 1 - math.max(0, fowDistance / MIN_RANGE)
-                    activeRoomFowFactor = 0.2 * activeRoomFowFactor * (1 - math.max(0, math.min(activeRoomAnchorDistance - activeRoom.fowRange, FADE_RANGE)) / FADE_RANGE)
+                    activeRoomFowFactor = 0.2 * activeRoomFowFactor * (1 - math.max(0, math.min(activeRoomAnchorDistance - (activeRoom.fowRange - FADE_RANGE), FADE_RANGE)) / FADE_RANGE)
 
                     fowFactor = math.max(fowFactor, activeRoomFowFactor)
 

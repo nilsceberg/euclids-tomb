@@ -184,6 +184,7 @@ function map.new(tiles, name, onEnter)
 
             self.active = true
 
+            self.fowRange = player.visionRange
             self.room.onEnter(player, self, from)
 
             for k, conn in ipairs(room.connections) do

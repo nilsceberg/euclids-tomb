@@ -10,13 +10,14 @@ function player.new(initialRoomInstance)
         currentRoomInstance = initialRoomInstance,
         currentTileX = 3,
         currentTileY = 3,
+        visionRange = 5,
         playerInstance = nil,
     }
 
     local cube = entity.new(assets.cube, player.currentTileX, player.currentTileY, 0, 1, 1)
     initialRoomInstance.room:addEntity(cube)
 
-    initialRoomInstance:enter(nil)
+    initialRoomInstance:enter(nil, player)
 
     function player:update(dt, cam, entities)
         -- Just pick one
