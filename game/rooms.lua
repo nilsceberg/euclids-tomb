@@ -27,7 +27,7 @@ rooms.intro = map.new({
 
     if rooms.intro.laps == 8 then
         rooms.intro:connect(map.connection(
-            5, 13, 0, 4, rooms.hall, 1
+            4, 13, 0, 5, rooms.hall, 1
         ))
     end
 
