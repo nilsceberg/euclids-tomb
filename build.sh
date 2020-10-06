@@ -1,4 +1,5 @@
-ASEPRITE_BIN=~/.steam/steam/steamapps/common/Aseprite/aseprite
+#ASEPRITE_BIN=~/.steam/steam/steamapps/common/Aseprite/aseprite
+ASEPRITE_BIN=/expendable/deox/games/SteamLibrary/steamapps/common/Aseprite/aseprite
 
 OUT_DIR=out
 

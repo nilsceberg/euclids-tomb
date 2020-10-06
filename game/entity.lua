@@ -6,7 +6,7 @@ local coords = require "game.coords"
 
 local entity = {}
 
-function entity.new(asset, x, y, z, d, layer, autofade, map)
+function entity.new(asset, x, y, z, d, layer, autofade, map, rotation)
     local object = {
         asset = asset,
         x = x,
@@ -18,7 +18,8 @@ function entity.new(asset, x, y, z, d, layer, autofade, map)
         instances = {},
         color = {1,1,1},
         autofade = autofade or false,
-        map = map or false
+        map = map or false,
+        baseRotation = rotation or 0,
     }
 
     setmetatable(object, {
@@ -96,7 +97,7 @@ function entity.new(asset, x, y, z, d, layer, autofade, map)
             love.graphics.setColor(r, g, b)
             local cx, cy = camera:getOffset()
             local sx, sy = coords.worldToScreen(self:getX(), self:getY(), self:getZ())
-            object.asset:draw(cx + sx - object.asset.originX, cy + sy - object.asset.originY, rotation)
+            object.asset:draw(cx + sx - object.asset.originX, cy + sy - object.asset.originY, (object.baseRotation + rotation) % 4)
             love.graphics.setColor(1, 1, 1)
         end
 

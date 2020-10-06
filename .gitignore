@@ -5,3 +5,6 @@ builddep
 dist
 *.zip
 lua_modules
+
+assets/atlas.*
+*.tmx

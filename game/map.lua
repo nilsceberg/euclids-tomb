@@ -59,7 +59,7 @@ function isWall(tileType)
     return tileType == 2 or tileType == 5
 end
 
-function addMapEntity(x, y, tileType, room)
+function addMapEntity(x, y, depth, tileType, room, rotation)
     local asset = nil
     if tileType == 1 then
         asset = assets.tile
@@ -85,8 +85,7 @@ function addMapEntity(x, y, tileType, room)
     end
 
     if asset ~= nil then
-        local e = entity.new(asset, x, y, 0, depth, asset.layer, tileType == 2, true)
-        --entities:add(e)
+        local e = entity.new(asset, x, y, 0, depth, asset.layer, tileType == 2, true, rotation)
         room:addEntity(e)
     end
 end
@@ -192,7 +191,7 @@ function map.new(tiles, name, onEnter)
             end
         end
 
-        function instance:setTile(wx, wy, tileType, entities)
+        function instance:setTile(wx, wy, tileType, entities, rotation)
             local rx, ry = coords.worldToInstance(self, wx, wy)
             if rx < 0 or ry < 0 or rx >= self.room.width or ry >= self.room.height then
                 return
@@ -207,7 +206,7 @@ function map.new(tiles, name, onEnter)
             end
 
             if tileType ~= 0 then
-                addMapEntity(rx, ry, tileType, self.room)
+                addMapEntity(rx, ry, 0, tileType, self.room, rotation)
             end
             self.room.tiles[ry + 1][rx + 1] = tileType
             printMap(self.room.tiles)
@@ -272,7 +271,13 @@ function map.new(tiles, name, onEnter)
             end
 
             for depth, tileType in ipairs(tileTypes) do
-                addMapEntity(x, y, tileType, room)
+                local rotation = 0
+                if type(tileType) == "table" then
+                    rotation = tileType[2]
+                    tileType = tileType[1]
+                end
+
+                addMapEntity(x, y, depth, tileType, room, rotation)
             end
         end
     end
