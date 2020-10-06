@@ -60,22 +60,39 @@ function entity.new(asset, x, y, z, d, layer, autofade, map, rotation)
             local r, g, b = unpack(self.entity.color)
 
             if self.roomInstance.fow then
-                local fowDistance = math.sqrt((self.roomInstance.anchor.x - self.entity.x)^2 + (self.roomInstance.anchor.y - self.entity.y)^2)
+                local FADE_RANGE = 4
 
-                local FADE_RANGE = 4 --= self.roomInstance.fowRange
-                fowFactor = 1 - math.min(fowDistance - self.roomInstance.fowRange, FADE_RANGE) / FADE_RANGE
+                -- Active room fading
+                if self.roomInstance.active then
+                    local fowDistance = math.sqrt((self.roomInstance.anchor.x - self.entity.x)^2 + (self.roomInstance.anchor.y - self.entity.y)^2)
 
-                r = r * fowFactor
-                g = g * fowFactor
-                b = b * fowFactor
+                    local fowFactor = 1 - math.min(fowDistance - self.roomInstance.fowRange, FADE_RANGE) / FADE_RANGE
+
+                    r = r * fowFactor
+                    g = g * fowFactor
+                    b = b * fowFactor
+                end
 
                 -- Now, let's also fade based on our anchor's world distance to player
-                if self.roomInstance.id ~= context.player.currentRoomInstance.id then
-                    local fowDistance = math.sqrt((self:getX() - context.player.playerInstance:getX())^2 + (self:getY() - context.player.playerInstance:getY())^2)
+                --if self.roomInstance.id ~= context.player.currentRoomInstance.id then
+                if not self.roomInstance.active then
+                    local visionDistance = math.sqrt((self:getX() - context.player.playerInstance:getX())^2 + (self:getY() - context.player.playerInstance:getY())^2)
 
-                    local FADE_RANGE = 8 --= self.roomInstance.fowRange
-                    --fowFactor = math.max(0.2, 1 - math.min(fowDistance - self.roomInstance.fowRange, FADE_RANGE) / FADE_RANGE)
-                    fowFactor = 1 - math.min(fowDistance - self.roomInstance.fowRange, FADE_RANGE) / FADE_RANGE
+                    local VISION_RANGE = 4 --= self.roomInstance.fowRange
+                    --fowFactor = math.max(0.2, 1 - math.min(fowDistance - self.roomInstance.fowRange, VISION_RANGE) / VISION_RANGE)
+                    local fowFactor = 1 - math.min(visionDistance - self.roomInstance.fowRange, VISION_RANGE) / VISION_RANGE
+
+                    -- Make sure it's always a little visible, as long as it's not in active room's FoW
+                    local MIN_RANGE = 3
+                    local activeRoom = context.player.currentRoomInstance
+                    local arax, aray = coords.instanceToWorld(activeRoom, activeRoom.anchor.x, activeRoom.anchor.y)
+                    local activeRoomAnchorDistance = math.sqrt((self:getX() - arax)^2 + (self:getY() - aray)^2)
+                    local fowDistance = math.sqrt((self.roomInstance.anchor.x - self.entity.x)^2 + (self.roomInstance.anchor.y - self.entity.y)^2)
+
+                    local activeRoomFowFactor = 1 - math.max(0, fowDistance / MIN_RANGE)
+                    activeRoomFowFactor = 0.2 * activeRoomFowFactor * (1 - math.max(0, math.min(activeRoomAnchorDistance - activeRoom.fowRange, FADE_RANGE)) / FADE_RANGE)
+
+                    fowFactor = math.max(fowFactor, activeRoomFowFactor)
 
                     r = r * fowFactor
                     g = g * fowFactor

@@ -64,14 +64,14 @@ rooms.grave = map.new({
 })
 
 -- Change to this when loop taken
-rooms.intro:connect(map.connection(
-    5, 13, 0, 4, rooms.hall, 1
-))
 --rooms.intro:connect(map.connection(
---    5, 13, 0, 3, rooms.intro, 1
+--    4, 13, 0, 5, rooms.hall, 1
 --))
 rooms.intro:connect(map.connection(
-    0, 3, 5, 13, rooms.intro, -1
+    4, 13, 0, 4, rooms.intro, 1
+))
+rooms.intro:connect(map.connection(
+    0, 4, 4, 13, rooms.intro, -1
 ))
 
 rooms.hall:connect(map.connection(
